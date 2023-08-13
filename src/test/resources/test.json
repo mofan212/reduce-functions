@@ -1,0 +1,39 @@
+[
+  {
+    "nodeId": "A",
+    "nodeType": "A_TYPE",
+    "componentA": {
+      "fieldA": "A-A"
+    },
+    "componentB": {
+      "fieldA": "B-A"
+    }
+  },
+  {
+    "nodeId": "B",
+    "nodeType": "B_TYPE",
+    "componentC": {
+      "componentA": {
+        "fieldA": "C-A-A"
+      },
+      "componentB": {
+        "fieldA": "C-B-A"
+      }
+    },
+    "componentD": {
+      "fieldA": "D-A"
+    }
+  },
+  {
+    "nodeId": "C",
+    "nodeType": "C_TYPE",
+    "componentDs": [
+      {
+        "fieldA": "D0-A"
+      },
+      {
+        "fieldB": "D0-B"
+      }
+    ]
+  }
+]
