@@ -18,10 +18,10 @@
       },
       "componentB": {
         "fieldA": "C-B-A"
+      },
+      "componentD": {
+        "fieldA": "D-A"
       }
-    },
-    "componentD": {
-      "fieldA": "D-A"
     }
   },
   {
@@ -32,7 +32,19 @@
         "fieldA": "D0-A"
       },
       {
-        "fieldB": "D0-B"
+        "fieldA": "D1-A"
+      }
+    ]
+  },
+  {
+    "nodeId": "D",
+    "nodeType": "D_TYPE",
+    "componentEs": [
+      {
+        "fieldA": "E0-A"
+      },
+      {
+        "fieldA": "E1-A"
       }
     ]
   }

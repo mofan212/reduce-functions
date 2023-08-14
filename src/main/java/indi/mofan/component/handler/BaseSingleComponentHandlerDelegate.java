@@ -34,6 +34,10 @@ public abstract class BaseSingleComponentHandlerDelegate implements ComponentHan
         return this.manager.getLocator(node);
     }
 
+    @Override
+    public final Function<JsonNode, List<Optional<JsonNode>>> getLocator(String locatorKey) {
+        return this.manager.getLocator(locatorKey);
+    }
 
     public final void addLocator(String locatorKey, String componentKey, String... componentKeys) {
         this.manager.addLocator(locatorKey, componentKey, componentKeys);
