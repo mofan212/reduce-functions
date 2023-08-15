@@ -2,10 +2,8 @@ package indi.mofan.component.handler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import indi.mofan.component.bo.MyComponent;
 import indi.mofan.component.manager.ComponentLocatorManager;
 import indi.mofan.component.manager.support.DefaultComponentLocatorManager;
-import indi.mofan.component.util.HandlerUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,11 +36,6 @@ public abstract class BaseArrayComponentHandlerDelegate extends BaseSimpleArrayC
     }
 
     @Override
-    public void addLocator(MyComponent component, String componentKey, String... componentKeys) {
-        addLocator(HandlerUtils.getComponentLocatorKey(component), componentKey, componentKeys);
-    }
-
-    @Override
     public final Function<JsonNode, List<Optional<JsonNode>>> getLocator(String locatorKey) {
         return this.manager.getLocator(locatorKey);
     }
@@ -55,10 +48,5 @@ public abstract class BaseArrayComponentHandlerDelegate extends BaseSimpleArrayC
     @Override
     public final Set<String> getLocatorsKeySet() {
         return this.manager.getLocatorsKeySet();
-    }
-
-    @Override
-    public final void afterSingletonsInstantiated() {
-        ComponentHandler.super.afterSingletonsInstantiated();
     }
 }

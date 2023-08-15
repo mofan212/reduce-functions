@@ -2,11 +2,11 @@ package indi.mofan.component.bo;
 
 /**
  * @author mofan
- * @date 2023/8/14 14:14
+ * @date 2023/8/15 20:03
  */
-public class ComponentA implements MyComponent {
+public class ComponentC implements MyComponent {
     @Override
     public String getNodeType() {
-        return "ComponentA";
+        return "ComponentC";
     }
 }

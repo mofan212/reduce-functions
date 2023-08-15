@@ -78,7 +78,7 @@ public abstract class BaseSimpleArrayComponentHandler implements SimpleComponent
     }
 
     @Override
-    public void handleSubComponent(Class<? extends SubComponentLocator> subComponentHandlerClazz,
+    public final void handleSubComponent(Class<? extends SubComponentLocator> subComponentHandlerClazz,
                                    JsonNode component, Consumer<JsonNode> subComponentElementConsumer) {
         SubComponentLocator.super.handleSubComponent(subComponentHandlerClazz, component, subComponentElementConsumer);
     }
@@ -98,6 +98,11 @@ public abstract class BaseSimpleArrayComponentHandler implements SimpleComponent
     @Override
     public final void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+    @Override
+    public final void afterSingletonsInstantiated() {
+        SubComponentLocator.super.afterSingletonsInstantiated();
     }
 
     /**

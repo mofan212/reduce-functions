@@ -2,12 +2,10 @@ package indi.mofan.component.handler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import indi.mofan.component.bo.MyComponent;
 import indi.mofan.component.manager.ComponentLocatorManager;
 import indi.mofan.component.manager.SubComponentLocatorManager;
 import indi.mofan.component.manager.support.DefaultComponentLocatorManager;
 import indi.mofan.component.manager.support.DefaultSubComponentLocatorManager;
-import indi.mofan.component.util.HandlerUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,17 +45,12 @@ public abstract class BaseSingleComponentHandlerDelegate implements ComponentHan
     }
 
     @Override
-    public final void addLocator(MyComponent component, String componentKey, String... componentKeys) {
-        addLocator(HandlerUtils.getComponentLocatorKey(component), componentKey, componentKeys);
-    }
-
-    @Override
     public final Set<String> getLocatorsKeySet() {
         return this.manager.getLocatorsKeySet();
     }
 
     @Override
-    public Function<JsonNode, List<Optional<JsonNode>>> getSubLocator(Class<? extends SubComponentLocator> subComponentHandlerClazz) {
+    public final Function<JsonNode, List<Optional<JsonNode>>> getSubLocator(Class<? extends SubComponentLocator> subComponentHandlerClazz) {
         return this.subComponentLocatorManager.getSubLocator(subComponentHandlerClazz);
     }
 

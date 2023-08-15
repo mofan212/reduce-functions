@@ -39,13 +39,15 @@
   {
     "nodeId": "D",
     "nodeType": "D_TYPE",
-    "componentEs": [
-      {
-        "fieldA": "E0-A"
-      },
-      {
-        "fieldA": "E1-A"
-      }
-    ]
+    "componentF": {
+      "componentEs": [
+        {
+          "fieldA": "E0-A"
+        },
+        {
+          "fieldA": "E1-A"
+        }
+      ]
+    }
   }
 ]
