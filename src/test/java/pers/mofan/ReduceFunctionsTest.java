@@ -12,8 +12,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
+import pers.mofan.component.bo.ComponentA;
+import pers.mofan.component.bo.ComponentB;
+import pers.mofan.component.bo.ComponentC;
+import pers.mofan.component.bo.ComponentD;
+import pers.mofan.component.bo.ComponentE;
 import pers.mofan.component.context.HandlerContext;
 import pers.mofan.component.helper.ComponentHandlerHelper;
+import pers.mofan.component.helper.ReferenceRelationshipResolverHelper;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -29,6 +35,8 @@ public class ReduceFunctionsTest implements WithAssertions {
 
     @Autowired
     private ComponentHandlerHelper handlerHelper;
+    @Autowired
+    private ReferenceRelationshipResolverHelper resolverHelper;
 
     @BeforeAll
     @SneakyThrows
@@ -55,5 +63,17 @@ public class ReduceFunctionsTest implements WithAssertions {
                 Assertions.fail();
             }
         });
+    }
+
+    @Test
+    public void testFindReferencedComponents() {
+        assertThat(resolverHelper.findReferencedComponent(arrayNode, ComponentA.class)).hasSize(2);
+        assertThat(resolverHelper.findReferencedComponent(arrayNode, ComponentB.class)).hasSize(2);
+
+        assertThat(resolverHelper.findReferencedComponent(arrayNode, ComponentC.class)).hasSize(1);
+
+        // TODO: 2023/8/20 增加参数，根据参数找单个组件还是列表组件
+        assertThat(resolverHelper.findReferencedComponent(arrayNode, ComponentD.class)).hasSize(4);
+        assertThat(resolverHelper.findReferencedComponent(arrayNode, ComponentE.class)).hasSize(3);
     }
 }

@@ -1,11 +1,9 @@
 package pers.mofan.component.handler.impl.array;
 
-import pers.mofan.component.bo.ComponentD;
-import pers.mofan.component.bo.MyComponent;
+import org.springframework.stereotype.Component;
 import pers.mofan.component.handler.BaseArrayComponentHandlerDelegate;
 import pers.mofan.component.handler.SimpleComponentHandler;
 import pers.mofan.component.handler.impl.simple.ComponentDHandler;
-import org.springframework.stereotype.Component;
 
 /**
  * @author mofan
@@ -13,10 +11,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ComponentDsHandler extends BaseArrayComponentHandlerDelegate {
-    @Override
-    public Class<? extends MyComponent> getComponentIdentity() {
-        return ComponentD.class;
-    }
 
     @Override
     protected Class<? extends SimpleComponentHandler> elementComponent() {

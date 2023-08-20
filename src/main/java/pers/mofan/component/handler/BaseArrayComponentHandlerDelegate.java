@@ -26,11 +26,6 @@ public abstract class BaseArrayComponentHandlerDelegate extends BaseSimpleArrayC
     }
 
     @Override
-    public final boolean loadSubComponentLocators() {
-        return true;
-    }
-
-    @Override
     public final void addLocator(String locatorKey, String componentKey, String... componentKeys) {
         this.manager.addLocator(locatorKey, componentKey, componentKeys);
     }

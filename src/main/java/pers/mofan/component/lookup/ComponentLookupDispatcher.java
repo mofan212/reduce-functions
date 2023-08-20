@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import pers.mofan.component.ComponentIdentity;
+import pers.mofan.component.bo.MyComponent;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,9 +25,9 @@ import java.util.stream.Collectors;
 @Component
 public class ComponentLookupDispatcher implements ApplicationContextAware {
 
-    private Map<Class<?>, ComponentLookup> lookupMap;
+    private Map<Class<? extends MyComponent>, ComponentLookup> lookupMap;
 
-    public Map<Class<?>, List<JsonNode>> lookup(ObjectNode objectNode, Set<Class<?>> componentIdentities) {
+    public Map<Class<? extends MyComponent>, List<JsonNode>> lookup(ObjectNode objectNode, Set<Class<? extends MyComponent>> componentIdentities) {
         if (CollectionUtils.isEmpty(componentIdentities)) {
             return Collections.emptyMap();
         }

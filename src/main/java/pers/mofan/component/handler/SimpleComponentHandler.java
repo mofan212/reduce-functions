@@ -1,6 +1,7 @@
 package pers.mofan.component.handler;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import pers.mofan.component.ComponentIdentity;
 import pers.mofan.component.context.HandlerContext;
 import org.springframework.lang.NonNull;
 
@@ -8,7 +9,7 @@ import org.springframework.lang.NonNull;
  * @author mofan
  * @date 2023/8/13 15:23
  */
-public interface SimpleComponentHandler {
+public interface SimpleComponentHandler extends ComponentIdentity {
     /**
      * 组件处理
      *

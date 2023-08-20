@@ -3,13 +3,14 @@ package pers.mofan.component.handler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import pers.mofan.component.context.HandlerContext;
-import pers.mofan.component.manager.support.DefaultSubComponentLocatorManager;
-import pers.mofan.util.CastUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.lang.NonNull;
+import pers.mofan.component.bo.MyComponent;
+import pers.mofan.component.context.HandlerContext;
+import pers.mofan.component.manager.support.DefaultSubComponentLocatorManager;
+import pers.mofan.util.CastUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,27 +27,23 @@ import java.util.stream.StreamSupport;
  * @author mofan
  * @date 2023/8/13 17:10
  */
-public abstract class BaseSimpleArrayComponentHandler implements SimpleComponentHandler, SubComponentLocator, ApplicationContextAware {
+public abstract class BaseSimpleArrayComponentHandler implements SimpleComponentHandler, SimpleComponentLocator, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 
     private final DefaultSubComponentLocatorManager subComponentLocatorManager = new DefaultSubComponentLocatorManager();
 
-    /**
-     * 是否需要加载子组件定位器
-     *
-     * @return 默认无需加载
-     */
-    public boolean loadSubComponentLocators() {
-        return false;
-    }
-
     @Override
     public final void initSubComponentLocators() {
-        if (loadSubComponentLocators() && SubComponentLocator.class.isAssignableFrom(elementComponent())) {
+        if (SubComponentLocator.class.isAssignableFrom(elementComponent())) {
             Class<SubComponentLocator> clazz = CastUtils.cast(elementComponent());
             addSubLocator(clazz);
         }
+    }
+
+    @Override
+    public Class<? extends MyComponent> getComponentIdentity() {
+        return applicationContext.getBean(elementComponent()).getComponentIdentity();
     }
 
     public final void addSubLocator(Class<? extends SubComponentLocator> subComponentHandlerClazz) {
@@ -80,7 +77,7 @@ public abstract class BaseSimpleArrayComponentHandler implements SimpleComponent
     @Override
     public final void handleSubComponent(Class<? extends SubComponentLocator> subComponentHandlerClazz,
                                    JsonNode component, Consumer<JsonNode> subComponentElementConsumer) {
-        SubComponentLocator.super.handleSubComponent(subComponentHandlerClazz, component, subComponentElementConsumer);
+        SimpleComponentLocator.super.handleSubComponent(subComponentHandlerClazz, component, subComponentElementConsumer);
     }
 
     @Override
@@ -103,7 +100,7 @@ public abstract class BaseSimpleArrayComponentHandler implements SimpleComponent
     /**
      * 数组元素组件级联修改处理器
      *
-     * @return 级联修改处理器的 Class
+     * @return 处理器的 Class
      */
     protected abstract Class<? extends SimpleComponentHandler> elementComponent();
 }

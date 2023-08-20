@@ -6,5 +6,5 @@ package pers.mofan.component.handler;
  * @author mofan
  * @date 2023/8/13 17:29
  */
-public interface ComponentHandler extends SimpleComponentHandler, ComponentLocator {
+public interface ComponentHandler extends SimpleComponentHandler, TopLevelComponentLocator {
 }

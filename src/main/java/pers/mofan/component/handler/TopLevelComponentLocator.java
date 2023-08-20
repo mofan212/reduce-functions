@@ -1,14 +1,13 @@
 package pers.mofan.component.handler;
 
-import pers.mofan.component.ComponentIdentity;
-import pers.mofan.component.manager.ComponentLocatorManager;
 import org.springframework.beans.factory.SmartInitializingSingleton;
+import pers.mofan.component.manager.ComponentLocatorManager;
 
 /**
  * @author mofan
  * @date 2023/8/13 17:21
  */
-public interface ComponentLocator extends ComponentIdentity, ComponentLocatorManager, SubComponentLocator, SmartInitializingSingleton {
+public interface TopLevelComponentLocator extends ComponentLocatorManager, SimpleComponentLocator, SmartInitializingSingleton {
     /**
      * 是否为列表组件
      *
@@ -24,7 +23,7 @@ public interface ComponentLocator extends ComponentIdentity, ComponentLocatorMan
     @Override
     default void afterSingletonsInstantiated() {
         initComponentLocators();
-        SubComponentLocator.super.afterSingletonsInstantiated();
+        SimpleComponentLocator.super.afterSingletonsInstantiated();
     }
 
     default void initSubComponentLocators() {

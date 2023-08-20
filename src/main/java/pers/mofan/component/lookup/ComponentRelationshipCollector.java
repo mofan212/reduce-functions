@@ -3,7 +3,7 @@ package pers.mofan.component.lookup;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Maps;
 import com.google.common.graph.Graph;
-import pers.mofan.component.handler.ComponentLocator;
+import pers.mofan.component.handler.TopLevelComponentLocator;
 import pers.mofan.component.handler.SubComponentLocator;
 import pers.mofan.component.util.GraphUtils;
 import pers.mofan.util.CastUtils;
@@ -38,11 +38,9 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
     @Autowired
     private ApplicationContext applicationContext;
     @Autowired
-    private List<ComponentLocator> componentLocators;
-    @Autowired
     private List<SubComponentLocator> subComponentLocators;
 
-    private Map<String, List<ComponentLocator>> processedComponentMap;
+    private Map<String, List<SubComponentLocator>> processedComponentMap;
 
     private Graph<Class<? extends SubComponentLocator>> subComponentRefGraph;
 
@@ -69,10 +67,10 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
     }
 
     private Map<String, Function<JsonNode, List<Optional<JsonNode>>>> reduceLocatePath(List<SubComponentLocator> handlers) {
-        if (!ComponentLocator.class.isAssignableFrom(handlers.get(0).getClass())) {
+        if (!TopLevelComponentLocator.class.isAssignableFrom(handlers.get(0).getClass())) {
             return Collections.emptyMap();
         }
-        ComponentLocator firstHandler = CastUtils.cast(handlers.get(0));
+        TopLevelComponentLocator firstHandler = CastUtils.cast(handlers.get(0));
         Map<String, Function<JsonNode, List<Optional<JsonNode>>>> nodeLocatorMap = firstHandler.getLocatorsKeySet().stream()
                 .collect(Collectors.toMap(Function.identity(), firstHandler::getLocator));
         List<Function<JsonNode, List<Optional<JsonNode>>>> functions = new ArrayList<>();
@@ -94,7 +92,7 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
 
     private Collection<List<Class<? extends SubComponentLocator>>> buildTargetComponentRefPath(String componentIdentity) {
         return this.processedComponentMap.getOrDefault(componentIdentity, Collections.emptyList()).stream()
-                .map(ComponentLocator::getClass)
+                .map(SubComponentLocator::getClass)
                 .flatMap(i -> buildRefPaths(i).stream())
                 .collect(Collectors.toSet());
     }
@@ -103,16 +101,16 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
         List<List<Class<? extends SubComponentLocator>>> paths = GraphUtils.getAllPath2TargetNode(this.subComponentRefGraph, targetHandlerClazz);
         Set<List<Class<? extends SubComponentLocator>>> refPaths = new HashSet<>();
         for (List<Class<? extends SubComponentLocator>> singlePath : paths) {
-            boolean isComponentHandler = singlePath.stream().findFirst().map(ComponentLocator.class::isAssignableFrom).orElse(Boolean.FALSE);
+            boolean isComponentHandler = singlePath.stream().findFirst().map(TopLevelComponentLocator.class::isAssignableFrom).orElse(Boolean.FALSE);
             if (!isComponentHandler) {
                 continue;
             }
             for (int i = 0; i < singlePath.size(); i++) {
                 Class<? extends SubComponentLocator> clazz = singlePath.get(i);
-                if (!ComponentLocator.class.isAssignableFrom(clazz)) {
+                if (!TopLevelComponentLocator.class.isAssignableFrom(clazz)) {
                     continue;
                 }
-                ComponentLocator handler = CastUtils.cast(applicationContext.getBean(clazz));
+                TopLevelComponentLocator handler = CastUtils.cast(applicationContext.getBean(clazz));
                 if (CollectionUtils.isEmpty(handler.getLocatorsKeySet())) {
                     continue;
                 }
@@ -120,7 +118,7 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
             }
         }
         // 有些组件可能没有任何一个组件引用它，只要它是 ComponentLocator 的子类就加进去
-        if (ComponentLocator.class.isAssignableFrom(targetHandlerClazz)) {
+        if (TopLevelComponentLocator.class.isAssignableFrom(targetHandlerClazz)) {
             refPaths.add(Collections.singletonList(targetHandlerClazz));
         }
         return refPaths;
@@ -158,7 +156,7 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
     }
 
     private void buildProcessedComponentMap() {
-        this.processedComponentMap = this.componentLocators.stream().collect(Collectors.groupingBy(i -> i.getComponentIdentity().getName()));
+        this.processedComponentMap = this.subComponentLocators.stream().collect(Collectors.groupingBy(i -> i.getComponentIdentity().getName()));
     }
 
     @Override

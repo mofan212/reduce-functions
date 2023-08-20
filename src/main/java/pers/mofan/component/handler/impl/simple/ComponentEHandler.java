@@ -1,6 +1,8 @@
 package pers.mofan.component.handler.impl.simple;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import pers.mofan.component.bo.ComponentE;
+import pers.mofan.component.bo.MyComponent;
 import pers.mofan.component.context.HandlerContext;
 import pers.mofan.component.handler.BaseSimpleComponentHandler;
 import org.springframework.lang.NonNull;
@@ -13,6 +15,12 @@ import pers.mofan.component.util.HandlerUtils;
  */
 @Component
 public class ComponentEHandler extends BaseSimpleComponentHandler {
+
+    @Override
+    public Class<? extends MyComponent> getComponentIdentity() {
+        return ComponentE.class;
+    }
+
     @Override
     public void handleComponent(HandlerContext context, @NonNull JsonNode component) {
         System.out.println(HandlerUtils.getFieldAValue(component));
