@@ -2,7 +2,7 @@ package pers.mofan.component.lookup;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import pers.mofan.component.manager.ComponentLocatorManager;
+import pers.mofan.component.manager.TopLevelComponentLocatorManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -27,11 +27,13 @@ public abstract class BaseComponentLookup implements ComponentLookup, Applicatio
     @Autowired
     private ApplicationContext applicationContext;
 
-    private final Map<String, List<Function<JsonNode, List<Optional<JsonNode>>>>> componentReferenceRelationship = new ConcurrentHashMap<>();
+    private final Map<String, List<Function<JsonNode, List<Optional<JsonNode>>>>> singleComponentReferenceRelationship = new ConcurrentHashMap<>();
+    private final Map<String, List<Function<JsonNode, List<Optional<JsonNode>>>>> arrayComponentReferenceRelationship = new ConcurrentHashMap<>();
 
     @Override
-    public final List<JsonNode> lookup(ObjectNode node) {
-        return componentReferenceRelationship.getOrDefault(ComponentLocatorManager.buildLocatorKey(node), Collections.emptyList()).stream()
+    public final List<JsonNode> lookup(ObjectNode node, boolean isComponentArray) {
+        var relationShip = isComponentArray ? this.arrayComponentReferenceRelationship : this.singleComponentReferenceRelationship;
+        return relationShip.getOrDefault(TopLevelComponentLocatorManager.buildLocatorKey(node), Collections.emptyList()).stream()
                 .flatMap(i -> i.apply(node).stream())
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -39,10 +41,10 @@ public abstract class BaseComponentLookup implements ComponentLookup, Applicatio
     }
 
     @Override
-    public final void run(ApplicationArguments args) throws Exception {
-        Map<String, List<Function<JsonNode, List<Optional<JsonNode>>>>> map =
-                applicationContext.getBean(ComponentRelationshipCollector.class).collect(getComponentIdentity().getName());
-        componentReferenceRelationship.putAll(map);
+    public final void run(ApplicationArguments args) {
+        var map = applicationContext.getBean(ComponentRelationshipCollector.class).collect(getComponentIdentity().getName());
+        singleComponentReferenceRelationship.putAll(map.getOrDefault(Boolean.FALSE, Collections.emptyMap()));
+        arrayComponentReferenceRelationship.putAll(map.getOrDefault(Boolean.TRUE, Collections.emptyMap()));
     }
 
     @Override

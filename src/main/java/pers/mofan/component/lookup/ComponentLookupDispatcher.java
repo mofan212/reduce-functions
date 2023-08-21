@@ -27,13 +27,15 @@ public class ComponentLookupDispatcher implements ApplicationContextAware {
 
     private Map<Class<? extends MyComponent>, ComponentLookup> lookupMap;
 
-    public Map<Class<? extends MyComponent>, List<JsonNode>> lookup(ObjectNode objectNode, Set<Class<? extends MyComponent>> componentIdentities) {
+    public Map<Class<? extends MyComponent>, List<JsonNode>> lookup(ObjectNode objectNode,
+                                                                    Set<Class<? extends MyComponent>> componentIdentities,
+                                                                    boolean isArrayComponent) {
         if (CollectionUtils.isEmpty(componentIdentities)) {
             return Collections.emptyMap();
         }
         return componentIdentities.stream().collect(Collectors.toMap(Function.identity(),
                 // 不一定转入的组件 id 都有 Lookup 的实现
-                i -> Optional.ofNullable(lookupMap.get(i)).map(j -> j.lookup(objectNode)).orElse(Collections.emptyList())));
+                i -> Optional.ofNullable(lookupMap.get(i)).map(j -> j.lookup(objectNode, isArrayComponent)).orElse(Collections.emptyList())));
     }
 
     @Override

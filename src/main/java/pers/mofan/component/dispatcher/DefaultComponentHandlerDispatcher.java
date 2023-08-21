@@ -2,7 +2,7 @@ package pers.mofan.component.dispatcher;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import pers.mofan.component.handler.ComponentHandler;
-import pers.mofan.component.manager.ComponentLocatorManager;
+import pers.mofan.component.manager.TopLevelComponentLocatorManager;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -29,7 +29,7 @@ public class DefaultComponentHandlerDispatcher implements ComponentHandlerDispat
 
     @Override
     public List<ComponentHandler> dispatch(ObjectNode objectNode) {
-        List<ComponentHandler> handlers = handlerMap.get(ComponentLocatorManager.buildLocatorKey(objectNode));
+        List<ComponentHandler> handlers = handlerMap.get(TopLevelComponentLocatorManager.buildLocatorKey(objectNode));
         if (CollectionUtils.isEmpty(handlers)) {
             return Collections.emptyList();
         }

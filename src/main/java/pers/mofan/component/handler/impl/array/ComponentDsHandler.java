@@ -1,7 +1,7 @@
 package pers.mofan.component.handler.impl.array;
 
 import org.springframework.stereotype.Component;
-import pers.mofan.component.handler.BaseArrayComponentHandlerDelegate;
+import pers.mofan.component.handler.BaseArrayTopLevelComponentHandlerDelegate;
 import pers.mofan.component.handler.SimpleComponentHandler;
 import pers.mofan.component.handler.impl.simple.ComponentDHandler;
 
@@ -10,7 +10,7 @@ import pers.mofan.component.handler.impl.simple.ComponentDHandler;
  * @date 2023/8/15 20:10
  */
 @Component
-public class ComponentDsHandler extends BaseArrayComponentHandlerDelegate {
+public class ComponentDsHandler extends BaseArrayTopLevelComponentHandlerDelegate {
 
     @Override
     protected Class<? extends SimpleComponentHandler> elementComponent() {

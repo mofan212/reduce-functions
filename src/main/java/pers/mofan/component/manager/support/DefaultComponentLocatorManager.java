@@ -1,7 +1,7 @@
 package pers.mofan.component.manager.support;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import pers.mofan.component.handler.ComponentLocator;
 import pers.mofan.component.manager.ComponentLocatorManager;
 
 import java.util.List;
@@ -10,52 +10,35 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author mofan
- * @date 2023/8/13 17:39
+ * @date 2023/8/13 17:09
  */
 public class DefaultComponentLocatorManager implements ComponentLocatorManager {
     /**
      * <p>
-     * 组件定位器
-     *     <ul>
-     *         <li>key: 节点唯一标识，采用节点的 type 和 activityType 的组装</li>
-     *         <li>value: 定位函数，传入整个微流程节点对象，返回组件 JSON 节点信息</li>
-     *     </ul>
+     * 子组件定位器
+     *      <ul>
+     *          <li>key: 子组件定位器 key，可以子组件处理器的 Class，也可以自定义</li>
+     *          <li>value: 定位函数，传入当前组件对象，返回对应的子组件 JSON 信息</li>
+     *      </ul>
      * </p>
      */
-    private final Map<String, Function<JsonNode, List<Optional<JsonNode>>>> componentLocators = new ConcurrentHashMap<>();
+    private final Map<Class<? extends ComponentLocator>, Function<JsonNode, List<Optional<JsonNode>>>> subComponentLocators = new ConcurrentHashMap<>();
 
     @Override
-    public Function<JsonNode, List<Optional<JsonNode>>> getLocator(ObjectNode node) {
-        return this.componentLocators.get(ComponentLocatorManager.buildLocatorKey(node));
-    }
-
-    @Override
-    public Function<JsonNode, List<Optional<JsonNode>>> getLocator(String locatorKey) {
-        return this.componentLocators.get(locatorKey);
+    public void addSubLocator(Class<? extends ComponentLocator> subComponentHandlerClazz, Function<JsonNode, List<Optional<JsonNode>>> locateFunction) {
+        this.subComponentLocators.put(subComponentHandlerClazz, locateFunction);
     }
 
     @Override
-    public Set<String> getLocatorsKeySet() {
-        return this.componentLocators.keySet();
-    }
-
-    private void addLocator(String key, Function<JsonNode, List<Optional<JsonNode>>> locateFunction) {
-        this.componentLocators.put(key, locateFunction);
+    public Function<JsonNode, List<Optional<JsonNode>>> getSubLocator(Class<? extends ComponentLocator> subComponentHandlerClazz) {
+        return this.subComponentLocators.get(subComponentHandlerClazz);
     }
 
     @Override
-    public void addLocator(String locatorKey, String componentKey, String... componentKeys) {
-        addLocator(locatorKey, objectNode -> getComponentObjectNode(objectNode, componentKey, componentKeys));
-    }
-
-    private List<Optional<JsonNode>> getComponentObjectNode(JsonNode node, String componentKey, String... componentKeys) {
-        return Stream.concat(Stream.of(componentKey), Stream.of(componentKeys)).distinct()
-                .map(i -> Optional.ofNullable(node.get(i)))
-                .collect(Collectors.toList());
+    public Set<Class<? extends ComponentLocator>> getSubLocatorsKeySet() {
+        return this.subComponentLocators.keySet();
     }
 }

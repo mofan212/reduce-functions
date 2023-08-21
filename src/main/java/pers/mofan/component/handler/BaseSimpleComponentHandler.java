@@ -1,8 +1,8 @@
 package pers.mofan.component.handler;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import pers.mofan.component.manager.SubComponentLocatorManager;
-import pers.mofan.component.manager.support.DefaultSubComponentLocatorManager;
+import pers.mofan.component.manager.ComponentLocatorManager;
+import pers.mofan.component.manager.support.DefaultComponentLocatorManager;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +16,9 @@ import java.util.function.Function;
  * @author mofan
  * @date 2023/8/13 19:44
  */
-public abstract class BaseSimpleComponentHandler implements SubComponentLocator, SimpleComponentHandler {
+public abstract class BaseSimpleComponentHandler implements ComponentLocator, SimpleComponentHandler {
 
-    private final SubComponentLocatorManager subComponentLocatorManager = new DefaultSubComponentLocatorManager();
+    private final ComponentLocatorManager componentLocatorManager = new DefaultComponentLocatorManager();
 
     @Override
     public void initSubComponentLocators() {
@@ -26,27 +26,27 @@ public abstract class BaseSimpleComponentHandler implements SubComponentLocator,
     }
 
     @Override
-    public final void addSubLocator(Class<? extends SubComponentLocator> subComponentHandlerClazz, Function<JsonNode, List<Optional<JsonNode>>> subLocatorFunction) {
-        this.subComponentLocatorManager.addSubLocator(subComponentHandlerClazz, subLocatorFunction);
+    public boolean isArrayComponent() {
+        return false;
     }
 
     @Override
-    public final Function<JsonNode, List<Optional<JsonNode>>> getSubLocator(Class<? extends SubComponentLocator> subComponentHandlerClazz) {
-        return this.subComponentLocatorManager.getSubLocator(subComponentHandlerClazz);
+    public final void addSubLocator(Class<? extends ComponentLocator> subComponentHandlerClazz, Function<JsonNode, List<Optional<JsonNode>>> subLocatorFunction) {
+        this.componentLocatorManager.addSubLocator(subComponentHandlerClazz, subLocatorFunction);
     }
 
     @Override
-    public final void handleSubComponent(Class<? extends SubComponentLocator> subComponentHandlerClazz, JsonNode component, Consumer<JsonNode> subComponentElementConsumer) {
-        SubComponentLocator.super.handleSubComponent(subComponentHandlerClazz, component, subComponentElementConsumer);
+    public final Function<JsonNode, List<Optional<JsonNode>>> getSubLocator(Class<? extends ComponentLocator> subComponentHandlerClazz) {
+        return this.componentLocatorManager.getSubLocator(subComponentHandlerClazz);
     }
 
     @Override
-    public final Set<Class<? extends SubComponentLocator>> getSubLocatorsKeySet() {
-        return this.subComponentLocatorManager.getSubLocatorsKeySet();
+    public final void handleSubComponent(Class<? extends ComponentLocator> subComponentHandlerClazz, JsonNode component, Consumer<JsonNode> subComponentElementConsumer) {
+        ComponentLocator.super.handleSubComponent(subComponentHandlerClazz, component, subComponentElementConsumer);
     }
 
     @Override
-    public final void afterSingletonsInstantiated() {
-        SubComponentLocator.super.afterSingletonsInstantiated();
+    public final Set<Class<? extends ComponentLocator>> getSubLocatorsKeySet() {
+        return this.componentLocatorManager.getSubLocatorsKeySet();
     }
 }

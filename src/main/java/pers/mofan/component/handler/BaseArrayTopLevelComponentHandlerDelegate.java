@@ -2,8 +2,8 @@ package pers.mofan.component.handler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import pers.mofan.component.manager.ComponentLocatorManager;
-import pers.mofan.component.manager.support.DefaultComponentLocatorManager;
+import pers.mofan.component.manager.TopLevelComponentLocatorManager;
+import pers.mofan.component.manager.support.DefaultTopLevelComponentLocatorManager;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +16,9 @@ import java.util.function.Function;
  * @author mofan
  * @date 2023/8/13 19:47
  */
-public abstract class BaseArrayComponentHandlerDelegate extends BaseSimpleArrayComponentHandler implements ComponentHandler {
+public abstract class BaseArrayTopLevelComponentHandlerDelegate extends BaseSimpleArrayComponentHandler implements ComponentHandler {
 
-    private final ComponentLocatorManager manager = new DefaultComponentLocatorManager();
+    private final TopLevelComponentLocatorManager manager = new DefaultTopLevelComponentLocatorManager();
 
     @Override
     public final boolean isArrayComponent() {

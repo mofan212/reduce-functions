@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import pers.mofan.component.bo.ComponentC;
 import pers.mofan.component.bo.MyComponent;
 import pers.mofan.component.context.HandlerContext;
-import pers.mofan.component.handler.BaseSingleComponentHandlerDelegate;
+import pers.mofan.component.handler.BaseSingleTopLevelComponentHandlerDelegate;
 import pers.mofan.component.handler.impl.simple.ComponentDHandler;
 import pers.mofan.util.JacksonUtils;
 
@@ -15,7 +15,7 @@ import pers.mofan.util.JacksonUtils;
  * @date 2023/8/15 20:03
  */
 @Component
-public class ComponentCHandler extends BaseSingleComponentHandlerDelegate {
+public class ComponentCHandler extends BaseSingleTopLevelComponentHandlerDelegate {
 
     @Override
     public Class<? extends MyComponent> getComponentIdentity() {

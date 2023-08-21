@@ -17,5 +17,5 @@ public interface ComponentLookup extends ComponentIdentity {
      * @param node 节点对象
      * @return 组件信息
      */
-    List<JsonNode> lookup(ObjectNode node);
+    List<JsonNode> lookup(ObjectNode node, boolean isComponentArray);
 }

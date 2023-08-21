@@ -67,13 +67,14 @@ public class ReduceFunctionsTest implements WithAssertions {
 
     @Test
     public void testFindReferencedComponents() {
-        assertThat(resolverHelper.findReferencedComponent(arrayNode, ComponentA.class)).hasSize(2);
-        assertThat(resolverHelper.findReferencedComponent(arrayNode, ComponentB.class)).hasSize(2);
+        assertThat(resolverHelper.findReferenceSingleComponent(arrayNode, ComponentA.class)).hasSize(2);
+        assertThat(resolverHelper.findReferenceSingleComponent(arrayNode, ComponentB.class)).hasSize(2);
+        assertThat(resolverHelper.findReferenceSingleComponent(arrayNode, ComponentC.class)).hasSize(1);
 
-        assertThat(resolverHelper.findReferencedComponent(arrayNode, ComponentC.class)).hasSize(1);
+        assertThat(resolverHelper.findReferenceSingleComponent(arrayNode, ComponentD.class)).hasSize(3);
+        assertThat(resolverHelper.findReferenceArrayComponent(arrayNode, ComponentD.class)).hasSize(1);
 
-        // TODO: 2023/8/20 增加参数，根据参数找单个组件还是列表组件
-        assertThat(resolverHelper.findReferencedComponent(arrayNode, ComponentD.class)).hasSize(4);
-        assertThat(resolverHelper.findReferencedComponent(arrayNode, ComponentE.class)).hasSize(3);
+        assertThat(resolverHelper.findReferenceSingleComponent(arrayNode, ComponentE.class)).hasSize(2);
+        assertThat(resolverHelper.findReferenceArrayComponent(arrayNode, ComponentE.class)).hasSize(1);
     }
 }

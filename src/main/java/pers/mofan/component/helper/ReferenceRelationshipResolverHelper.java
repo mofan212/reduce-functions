@@ -26,14 +26,16 @@ public class ReferenceRelationshipResolverHelper {
     @Autowired
     private ComponentLookupDispatcher dispatcher;
 
-    public Map<Class<? extends MyComponent>, List<JsonNode>> findReferencedComponents(ArrayNode arrayNode, Set<Class<? extends MyComponent>> componentClazzSet) {
+    public Map<Class<? extends MyComponent>, List<JsonNode>> findReferencedComponents(ArrayNode arrayNode,
+                                                                                      Set<Class<? extends MyComponent>> componentClazzSet,
+                                                                                      boolean isArrayComponent) {
         Map<Class<? extends MyComponent>, List<JsonNode>> componentInfo = Maps.newHashMapWithExpectedSize(3);
         for (JsonNode jsonNode : arrayNode) {
             if (!(jsonNode instanceof ObjectNode)) {
                 continue;
             }
             ObjectNode objectNode = CastUtils.cast(jsonNode);
-            for (Map.Entry<Class<? extends MyComponent>, List<JsonNode>> entry : dispatcher.lookup(objectNode, componentClazzSet).entrySet()) {
+            for (Map.Entry<Class<? extends MyComponent>, List<JsonNode>> entry : dispatcher.lookup(objectNode, componentClazzSet, isArrayComponent).entrySet()) {
                 List<JsonNode> jsonNodes = componentInfo.computeIfAbsent(entry.getKey(), (key) -> new ArrayList<>());
                 jsonNodes.addAll(entry.getValue());
             }
@@ -41,8 +43,20 @@ public class ReferenceRelationshipResolverHelper {
         return componentInfo;
     }
 
-    public List<JsonNode> findReferencedComponent(ArrayNode arrayNode, Class<? extends MyComponent> componentClazz) {
-        return Optional.ofNullable(this.findReferencedComponents(arrayNode, Set.of(componentClazz)))
+    private List<JsonNode> findReferencedComponent(ArrayNode arrayNode, Class<? extends MyComponent> componentClazz, boolean isArrayComponent) {
+        return Optional.ofNullable(this.findReferencedComponents(arrayNode, Set.of(componentClazz), isArrayComponent))
+                .map(i -> i.get(componentClazz))
+                .orElse(Collections.emptyList());
+    }
+
+    public List<JsonNode> findReferenceSingleComponent(ArrayNode arrayNode, Class<? extends MyComponent> componentClazz) {
+        return Optional.ofNullable(this.findReferencedComponents(arrayNode, Set.of(componentClazz), false))
+                .map(i -> i.get(componentClazz))
+                .orElse(Collections.emptyList());
+    }
+
+    public List<JsonNode> findReferenceArrayComponent(ArrayNode arrayNode, Class<? extends MyComponent> componentClazz) {
+        return Optional.ofNullable(this.findReferencedComponents(arrayNode, Set.of(componentClazz), true))
                 .map(i -> i.get(componentClazz))
                 .orElse(Collections.emptyList());
     }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Maps;
 import com.google.common.graph.Graph;
 import pers.mofan.component.handler.TopLevelComponentLocator;
-import pers.mofan.component.handler.SubComponentLocator;
+import pers.mofan.component.handler.ComponentLocator;
 import pers.mofan.component.util.GraphUtils;
 import pers.mofan.util.CastUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -38,35 +38,42 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
     @Autowired
     private ApplicationContext applicationContext;
     @Autowired
-    private List<SubComponentLocator> subComponentLocators;
+    private List<ComponentLocator> componentLocators;
 
-    private Map<String, List<SubComponentLocator>> processedComponentMap;
+    private Map<String, List<ComponentLocator>> processedComponentMap;
 
-    private Graph<Class<? extends SubComponentLocator>> subComponentRefGraph;
+    private Graph<Class<? extends ComponentLocator>> subComponentRefGraph;
 
-    public Map<String, List<Function<JsonNode, List<Optional<JsonNode>>>>> collect(String componentIdentity) {
-        Collection<List<Class<? extends SubComponentLocator>>> allRefPath = buildTargetComponentRefPath(componentIdentity);
+    /**
+     * @param componentIdentity 组件标识
+     * @return 最外层 Map 的 key，是否为列表组件；第二层 Map 的 key，顶级组件定位器的 key
+     */
+    public Map<Boolean, Map<String, List<Function<JsonNode, List<Optional<JsonNode>>>>>> collect(String componentIdentity) {
+        Collection<List<Class<? extends ComponentLocator>>> allRefPath = buildTargetComponentRefPath(componentIdentity);
         if (CollectionUtils.isEmpty(allRefPath)) {
             return Collections.emptyMap();
         }
-        Map<String, List<Function<JsonNode, List<Optional<JsonNode>>>>> result = new HashMap<>();
-        for (List<Class<? extends SubComponentLocator>> singlePath : allRefPath) {
+        var result = new HashMap<Boolean, Map<String, List<Function<JsonNode, List<Optional<JsonNode>>>>>>();
+        for (List<Class<? extends ComponentLocator>> singlePath : allRefPath) {
             if (CollectionUtils.isEmpty(singlePath)) {
                 continue;
             }
-            List<SubComponentLocator> handlers = singlePath.stream()
+            ComponentLocator targetComponent = applicationContext.getBean(singlePath.get(singlePath.size() - 1));
+            boolean isArrayComponent = targetComponent.isArrayComponent();
+            var locatorMap = result.computeIfAbsent(isArrayComponent, key -> new HashMap<>());
+            List<ComponentLocator> handlers = singlePath.stream()
                     .map(i -> applicationContext.getBean(i))
                     .collect(Collectors.toList());
             for (Map.Entry<String, Function<JsonNode, List<Optional<JsonNode>>>> entry : reduceLocatePath(handlers).entrySet()) {
                 String locatorKey = entry.getKey();
-                List<Function<JsonNode, List<Optional<JsonNode>>>> list = result.computeIfAbsent(locatorKey, key -> new ArrayList<>());
+                var list = locatorMap.computeIfAbsent(locatorKey, key -> new ArrayList<>());
                 list.add(entry.getValue());
             }
         }
         return result;
     }
 
-    private Map<String, Function<JsonNode, List<Optional<JsonNode>>>> reduceLocatePath(List<SubComponentLocator> handlers) {
+    private Map<String, Function<JsonNode, List<Optional<JsonNode>>>> reduceLocatePath(List<ComponentLocator> handlers) {
         if (!TopLevelComponentLocator.class.isAssignableFrom(handlers.get(0).getClass())) {
             return Collections.emptyMap();
         }
@@ -74,9 +81,9 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
         Map<String, Function<JsonNode, List<Optional<JsonNode>>>> nodeLocatorMap = firstHandler.getLocatorsKeySet().stream()
                 .collect(Collectors.toMap(Function.identity(), firstHandler::getLocator));
         List<Function<JsonNode, List<Optional<JsonNode>>>> functions = new ArrayList<>();
-        SubComponentLocator preHandler = firstHandler;
+        ComponentLocator preHandler = firstHandler;
         for (int i = 1; i < handlers.size(); i++) {
-            SubComponentLocator handler = handlers.get(i);
+            ComponentLocator handler = handlers.get(i);
             Function<JsonNode, List<Optional<JsonNode>>> subLocator = preHandler.getSubLocator(handler.getClass());
             functions.add(subLocator);
             preHandler = handler;
@@ -90,23 +97,23 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
         return componentLocateMap;
     }
 
-    private Collection<List<Class<? extends SubComponentLocator>>> buildTargetComponentRefPath(String componentIdentity) {
+    private Collection<List<Class<? extends ComponentLocator>>> buildTargetComponentRefPath(String componentIdentity) {
         return this.processedComponentMap.getOrDefault(componentIdentity, Collections.emptyList()).stream()
-                .map(SubComponentLocator::getClass)
+                .map(ComponentLocator::getClass)
                 .flatMap(i -> buildRefPaths(i).stream())
                 .collect(Collectors.toSet());
     }
 
-    private Collection<List<Class<? extends SubComponentLocator>>> buildRefPaths(Class<? extends SubComponentLocator> targetHandlerClazz) {
-        List<List<Class<? extends SubComponentLocator>>> paths = GraphUtils.getAllPath2TargetNode(this.subComponentRefGraph, targetHandlerClazz);
-        Set<List<Class<? extends SubComponentLocator>>> refPaths = new HashSet<>();
-        for (List<Class<? extends SubComponentLocator>> singlePath : paths) {
+    private Collection<List<Class<? extends ComponentLocator>>> buildRefPaths(Class<? extends ComponentLocator> targetHandlerClazz) {
+        List<List<Class<? extends ComponentLocator>>> paths = GraphUtils.getAllPath2TargetNode(this.subComponentRefGraph, targetHandlerClazz);
+        Set<List<Class<? extends ComponentLocator>>> refPaths = new HashSet<>();
+        for (List<Class<? extends ComponentLocator>> singlePath : paths) {
             boolean isComponentHandler = singlePath.stream().findFirst().map(TopLevelComponentLocator.class::isAssignableFrom).orElse(Boolean.FALSE);
             if (!isComponentHandler) {
                 continue;
             }
             for (int i = 0; i < singlePath.size(); i++) {
-                Class<? extends SubComponentLocator> clazz = singlePath.get(i);
+                Class<? extends ComponentLocator> clazz = singlePath.get(i);
                 if (!TopLevelComponentLocator.class.isAssignableFrom(clazz)) {
                     continue;
                 }
@@ -141,10 +148,10 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
     }
 
     private void buildSubComponentRefGraph() {
-        Map<Class<? extends SubComponentLocator>, Collection<Class<? extends SubComponentLocator>>> refMap = new HashMap<>();
-        for (SubComponentLocator handler : subComponentLocators) {
-            Set<Class<? extends SubComponentLocator>> subLocatorsKeySet = handler.getSubLocatorsKeySet();
-            Class<? extends SubComponentLocator> handlerClazz = handler.getClass();
+        Map<Class<? extends ComponentLocator>, Collection<Class<? extends ComponentLocator>>> refMap = new HashMap<>();
+        for (ComponentLocator handler : componentLocators) {
+            Set<Class<? extends ComponentLocator>> subLocatorsKeySet = handler.getSubLocatorsKeySet();
+            Class<? extends ComponentLocator> handlerClazz = handler.getClass();
             if (CollectionUtils.isEmpty(subLocatorsKeySet)) {
                 // 处理没有引用任何子组件的组件
                 refMap.put(handlerClazz, Collections.emptySet());
@@ -156,7 +163,7 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
     }
 
     private void buildProcessedComponentMap() {
-        this.processedComponentMap = this.subComponentLocators.stream().collect(Collectors.groupingBy(i -> i.getComponentIdentity().getName()));
+        this.processedComponentMap = this.componentLocators.stream().collect(Collectors.groupingBy(i -> i.getComponentIdentity().getName()));
     }
 
     @Override

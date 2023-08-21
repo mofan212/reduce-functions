@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.lang.NonNull;
 import pers.mofan.component.bo.MyComponent;
 import pers.mofan.component.context.HandlerContext;
-import pers.mofan.component.manager.support.DefaultSubComponentLocatorManager;
+import pers.mofan.component.manager.support.DefaultComponentLocatorManager;
 import pers.mofan.util.CastUtils;
 
 import java.util.Collections;
@@ -31,14 +31,19 @@ public abstract class BaseSimpleArrayComponentHandler implements SimpleComponent
 
     private ApplicationContext applicationContext;
 
-    private final DefaultSubComponentLocatorManager subComponentLocatorManager = new DefaultSubComponentLocatorManager();
+    private final DefaultComponentLocatorManager subComponentLocatorManager = new DefaultComponentLocatorManager();
 
     @Override
     public final void initSubComponentLocators() {
-        if (SubComponentLocator.class.isAssignableFrom(elementComponent())) {
-            Class<SubComponentLocator> clazz = CastUtils.cast(elementComponent());
+        if (ComponentLocator.class.isAssignableFrom(elementComponent())) {
+            Class<ComponentLocator> clazz = CastUtils.cast(elementComponent());
             addSubLocator(clazz);
         }
+    }
+
+    @Override
+    public boolean isArrayComponent() {
+        return true;
     }
 
     @Override
@@ -46,7 +51,7 @@ public abstract class BaseSimpleArrayComponentHandler implements SimpleComponent
         return applicationContext.getBean(elementComponent()).getComponentIdentity();
     }
 
-    public final void addSubLocator(Class<? extends SubComponentLocator> subComponentHandlerClazz) {
+    public final void addSubLocator(Class<? extends ComponentLocator> subComponentHandlerClazz) {
         this.addSubLocator(subComponentHandlerClazz, component -> {
             // 列表组件的子组件就是它的每项
             if (!(component instanceof ArrayNode)) {
@@ -59,23 +64,23 @@ public abstract class BaseSimpleArrayComponentHandler implements SimpleComponent
     }
 
     @Override
-    public final void addSubLocator(Class<? extends SubComponentLocator> subComponentHandlerClazz,
+    public final void addSubLocator(Class<? extends ComponentLocator> subComponentHandlerClazz,
                                     Function<JsonNode, List<Optional<JsonNode>>> subLocatorFunction) {
         this.subComponentLocatorManager.addSubLocator(subComponentHandlerClazz, subLocatorFunction);
     }
 
     @Override
-    public final Function<JsonNode, List<Optional<JsonNode>>> getSubLocator(Class<? extends SubComponentLocator> subComponentHandlerClazz) {
+    public final Function<JsonNode, List<Optional<JsonNode>>> getSubLocator(Class<? extends ComponentLocator> subComponentHandlerClazz) {
         return this.subComponentLocatorManager.getSubLocator(subComponentHandlerClazz);
     }
 
     @Override
-    public final Set<Class<? extends SubComponentLocator>> getSubLocatorsKeySet() {
+    public final Set<Class<? extends ComponentLocator>> getSubLocatorsKeySet() {
         return this.subComponentLocatorManager.getSubLocatorsKeySet();
     }
 
     @Override
-    public final void handleSubComponent(Class<? extends SubComponentLocator> subComponentHandlerClazz,
+    public final void handleSubComponent(Class<? extends ComponentLocator> subComponentHandlerClazz,
                                    JsonNode component, Consumer<JsonNode> subComponentElementConsumer) {
         SimpleComponentLocator.super.handleSubComponent(subComponentHandlerClazz, component, subComponentElementConsumer);
     }
