@@ -1,8 +1,8 @@
 package pers.mofan.component.handler;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import pers.mofan.component.manager.ComponentLocatorManager;
-import pers.mofan.component.manager.support.DefaultComponentLocatorManager;
+import pers.mofan.component.store.ComponentLocatorStore;
+import pers.mofan.component.store.support.DefaultComponentLocatorStore;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +18,7 @@ import java.util.function.Function;
  */
 public abstract class BaseSimpleComponentHandler implements ComponentLocator, SimpleComponentHandler {
 
-    private final ComponentLocatorManager componentLocatorManager = new DefaultComponentLocatorManager();
+    private final ComponentLocatorStore componentLocatorStore = new DefaultComponentLocatorStore();
 
     @Override
     public void initSubComponentLocators() {
@@ -32,12 +32,12 @@ public abstract class BaseSimpleComponentHandler implements ComponentLocator, Si
 
     @Override
     public final void addSubLocator(Class<? extends ComponentLocator> subComponentHandlerClazz, Function<JsonNode, List<Optional<JsonNode>>> subLocatorFunction) {
-        this.componentLocatorManager.addSubLocator(subComponentHandlerClazz, subLocatorFunction);
+        this.componentLocatorStore.addSubLocator(subComponentHandlerClazz, subLocatorFunction);
     }
 
     @Override
     public final Function<JsonNode, List<Optional<JsonNode>>> getSubLocator(Class<? extends ComponentLocator> subComponentHandlerClazz) {
-        return this.componentLocatorManager.getSubLocator(subComponentHandlerClazz);
+        return this.componentLocatorStore.getSubLocator(subComponentHandlerClazz);
     }
 
     @Override
@@ -47,6 +47,6 @@ public abstract class BaseSimpleComponentHandler implements ComponentLocator, Si
 
     @Override
     public final Set<Class<? extends ComponentLocator>> getSubLocatorsKeySet() {
-        return this.componentLocatorManager.getSubLocatorsKeySet();
+        return this.componentLocatorStore.getSubLocatorsKeySet();
     }
 }

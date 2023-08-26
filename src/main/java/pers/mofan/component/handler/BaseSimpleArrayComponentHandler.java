@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.lang.NonNull;
 import pers.mofan.component.bo.MyComponent;
 import pers.mofan.component.context.HandlerContext;
-import pers.mofan.component.manager.support.DefaultComponentLocatorManager;
+import pers.mofan.component.store.support.DefaultComponentLocatorStore;
 import pers.mofan.util.CastUtils;
 
 import java.util.Collections;
@@ -31,7 +31,7 @@ public abstract class BaseSimpleArrayComponentHandler implements SimpleComponent
 
     private ApplicationContext applicationContext;
 
-    private final DefaultComponentLocatorManager subComponentLocatorManager = new DefaultComponentLocatorManager();
+    private final DefaultComponentLocatorStore subComponentLocatorManager = new DefaultComponentLocatorStore();
 
     @Override
     public final void initSubComponentLocators() {

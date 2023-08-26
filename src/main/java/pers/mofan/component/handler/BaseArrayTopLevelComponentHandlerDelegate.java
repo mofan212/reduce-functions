@@ -2,8 +2,8 @@ package pers.mofan.component.handler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import pers.mofan.component.manager.TopLevelComponentLocatorManager;
-import pers.mofan.component.manager.support.DefaultTopLevelComponentLocatorManager;
+import pers.mofan.component.store.TopLevelComponentLocatorStore;
+import pers.mofan.component.store.support.DefaultTopLevelComponentLocatorStore;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,26 +18,26 @@ import java.util.function.Function;
  */
 public abstract class BaseArrayTopLevelComponentHandlerDelegate extends BaseSimpleArrayComponentHandler implements ComponentHandler {
 
-    private final TopLevelComponentLocatorManager manager = new DefaultTopLevelComponentLocatorManager();
+    private final TopLevelComponentLocatorStore store = new DefaultTopLevelComponentLocatorStore();
 
     @Override
     public final void addLocator(String locatorKey, String componentKey, String... componentKeys) {
-        this.manager.addLocator(locatorKey, componentKey, componentKeys);
+        this.store.addLocator(locatorKey, componentKey, componentKeys);
     }
 
     @Override
     public final Function<JsonNode, List<Optional<JsonNode>>> getLocator(String locatorKey) {
-        return this.manager.getLocator(locatorKey);
+        return this.store.getLocator(locatorKey);
     }
 
     @Override
     public final Function<JsonNode, List<Optional<JsonNode>>> getLocator(ObjectNode node) {
-        return this.manager.getLocator(node);
+        return this.store.getLocator(node);
     }
 
     @Override
     public final Set<String> getLocatorsKeySet() {
-        return this.manager.getLocatorsKeySet();
+        return this.store.getLocatorsKeySet();
     }
 
     @Override

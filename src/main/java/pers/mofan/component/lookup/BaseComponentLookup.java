@@ -2,7 +2,7 @@ package pers.mofan.component.lookup;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import pers.mofan.component.manager.TopLevelComponentLocatorManager;
+import pers.mofan.component.store.TopLevelComponentLocatorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -33,7 +33,7 @@ public abstract class BaseComponentLookup implements ComponentLookup, Applicatio
     @Override
     public final List<JsonNode> lookup(ObjectNode node, boolean isComponentArray) {
         var relationShip = isComponentArray ? this.arrayComponentReferenceRelationship : this.singleComponentReferenceRelationship;
-        return relationShip.getOrDefault(TopLevelComponentLocatorManager.buildLocatorKey(node), Collections.emptyList()).stream()
+        return relationShip.getOrDefault(TopLevelComponentLocatorStore.buildLocatorKey(node), Collections.emptyList()).stream()
                 .flatMap(i -> i.apply(node).stream())
                 .filter(Optional::isPresent)
                 .map(Optional::get)

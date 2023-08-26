@@ -7,8 +7,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.lang.NonNull;
 import pers.mofan.component.context.HandlerContext;
-import pers.mofan.component.manager.TopLevelComponentLocatorManager;
-import pers.mofan.component.manager.support.DefaultTopLevelComponentLocatorManager;
+import pers.mofan.component.store.TopLevelComponentLocatorStore;
+import pers.mofan.component.store.support.DefaultTopLevelComponentLocatorStore;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,25 +25,25 @@ public abstract class BaseSingleTopLevelComponentHandlerDelegate extends BaseSim
 
     private ApplicationContext applicationContext;
 
-    private final TopLevelComponentLocatorManager manager = new DefaultTopLevelComponentLocatorManager();
+    private final TopLevelComponentLocatorStore store = new DefaultTopLevelComponentLocatorStore();
 
     public final Function<JsonNode, List<Optional<JsonNode>>> getLocator(ObjectNode node) {
-        return this.manager.getLocator(node);
+        return this.store.getLocator(node);
     }
 
     @Override
     public final Function<JsonNode, List<Optional<JsonNode>>> getLocator(String locatorKey) {
-        return this.manager.getLocator(locatorKey);
+        return this.store.getLocator(locatorKey);
     }
 
     @Override
     public final void addLocator(String locatorKey, String componentKey, String... componentKeys) {
-        this.manager.addLocator(locatorKey, componentKey, componentKeys);
+        this.store.addLocator(locatorKey, componentKey, componentKeys);
     }
 
     @Override
     public final Set<String> getLocatorsKeySet() {
-        return this.manager.getLocatorsKeySet();
+        return this.store.getLocatorsKeySet();
     }
 
     @SuppressWarnings("unchecked")

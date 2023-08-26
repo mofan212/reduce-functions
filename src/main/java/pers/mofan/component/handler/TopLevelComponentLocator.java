@@ -1,7 +1,7 @@
 package pers.mofan.component.handler;
 
 import org.springframework.beans.factory.SmartInitializingSingleton;
-import pers.mofan.component.manager.TopLevelComponentLocatorManager;
+import pers.mofan.component.store.TopLevelComponentLocatorStore;
 
 /**
  * 顶级组件定位器。所谓顶级组件，就是在节点中，能够直接通过一个 key 就定位到目标组件。
@@ -9,7 +9,7 @@ import pers.mofan.component.manager.TopLevelComponentLocatorManager;
  * @author mofan
  * @date 2023/8/13 17:21
  */
-public interface TopLevelComponentLocator extends TopLevelComponentLocatorManager, SimpleComponentLocator, SmartInitializingSingleton {
+public interface TopLevelComponentLocator extends TopLevelComponentLocatorStore, SimpleComponentLocator, SmartInitializingSingleton {
 
     /**
      * 初始化组件定位器

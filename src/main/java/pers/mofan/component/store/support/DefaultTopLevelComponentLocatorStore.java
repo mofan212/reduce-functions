@@ -1,8 +1,8 @@
-package pers.mofan.component.manager.support;
+package pers.mofan.component.store.support;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import pers.mofan.component.manager.TopLevelComponentLocatorManager;
+import pers.mofan.component.store.TopLevelComponentLocatorStore;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +17,7 @@ import java.util.stream.Stream;
  * @author mofan
  * @date 2023/8/13 17:39
  */
-public class DefaultTopLevelComponentLocatorManager implements TopLevelComponentLocatorManager {
+public class DefaultTopLevelComponentLocatorStore implements TopLevelComponentLocatorStore {
     /**
      * <p>
      * 组件定位器
@@ -31,7 +31,7 @@ public class DefaultTopLevelComponentLocatorManager implements TopLevelComponent
 
     @Override
     public Function<JsonNode, List<Optional<JsonNode>>> getLocator(ObjectNode node) {
-        return this.componentLocators.get(TopLevelComponentLocatorManager.buildLocatorKey(node));
+        return this.componentLocators.get(TopLevelComponentLocatorStore.buildLocatorKey(node));
     }
 
     @Override

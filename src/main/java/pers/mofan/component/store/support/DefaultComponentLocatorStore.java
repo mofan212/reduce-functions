@@ -1,8 +1,8 @@
-package pers.mofan.component.manager.support;
+package pers.mofan.component.store.support;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import pers.mofan.component.handler.ComponentLocator;
-import pers.mofan.component.manager.ComponentLocatorManager;
+import pers.mofan.component.store.ComponentLocatorStore;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +15,7 @@ import java.util.function.Function;
  * @author mofan
  * @date 2023/8/13 17:09
  */
-public class DefaultComponentLocatorManager implements ComponentLocatorManager {
+public class DefaultComponentLocatorStore implements ComponentLocatorStore {
     /**
      * <p>
      * 子组件定位器

@@ -1,4 +1,4 @@
-package pers.mofan.component.manager;
+package pers.mofan.component.store;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import pers.mofan.component.handler.ComponentLocator;
@@ -12,7 +12,7 @@ import java.util.function.Function;
  * @author mofan
  * @date 2023/8/13 17:16
  */
-public interface ComponentLocatorManager {
+public interface ComponentLocatorStore {
     /**
      * 添加子组件定位器
      */

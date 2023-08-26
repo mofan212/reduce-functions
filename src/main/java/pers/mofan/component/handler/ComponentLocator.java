@@ -2,7 +2,7 @@ package pers.mofan.component.handler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import pers.mofan.component.ComponentIdentity;
-import pers.mofan.component.manager.ComponentLocatorManager;
+import pers.mofan.component.store.ComponentLocatorStore;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 
 import java.util.Optional;
@@ -14,7 +14,7 @@ import java.util.function.Consumer;
  * @author mofan
  * @date 2023/8/13 17:08
  */
-public interface ComponentLocator extends ComponentLocatorManager, ComponentIdentity, SmartInitializingSingleton  {
+public interface ComponentLocator extends ComponentLocatorStore, ComponentIdentity, SmartInitializingSingleton  {
 
     /**
      * 是否为列表组件
