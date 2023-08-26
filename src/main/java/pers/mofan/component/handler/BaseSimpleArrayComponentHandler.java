@@ -42,12 +42,12 @@ public abstract class BaseSimpleArrayComponentHandler implements SimpleComponent
     }
 
     @Override
-    public boolean isArrayComponent() {
+    public final boolean isArrayComponent() {
         return true;
     }
 
     @Override
-    public Class<? extends MyComponent> getComponentIdentity() {
+    public final Class<? extends MyComponent> getComponentIdentity() {
         return applicationContext.getBean(elementComponent()).getComponentIdentity();
     }
 

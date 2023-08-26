@@ -27,11 +27,6 @@ public abstract class BaseSingleTopLevelComponentHandlerDelegate extends BaseSim
 
     private final TopLevelComponentLocatorManager manager = new DefaultTopLevelComponentLocatorManager();
 
-    @Override
-    public final boolean isArrayComponent() {
-        return false;
-    }
-
     public final Function<JsonNode, List<Optional<JsonNode>>> getLocator(ObjectNode node) {
         return this.manager.getLocator(node);
     }
@@ -66,7 +61,7 @@ public abstract class BaseSingleTopLevelComponentHandlerDelegate extends BaseSim
     }
 
     @Override
-    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
+    public final void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 }

@@ -21,11 +21,6 @@ public abstract class BaseArrayTopLevelComponentHandlerDelegate extends BaseSimp
     private final TopLevelComponentLocatorManager manager = new DefaultTopLevelComponentLocatorManager();
 
     @Override
-    public final boolean isArrayComponent() {
-        return true;
-    }
-
-    @Override
     public final void addLocator(String locatorKey, String componentKey, String... componentKeys) {
         this.manager.addLocator(locatorKey, componentKey, componentKeys);
     }
@@ -43,5 +38,10 @@ public abstract class BaseArrayTopLevelComponentHandlerDelegate extends BaseSimp
     @Override
     public final Set<String> getLocatorsKeySet() {
         return this.manager.getLocatorsKeySet();
+    }
+
+    @Override
+    public final void afterSingletonsInstantiated() {
+        ComponentHandler.super.afterSingletonsInstantiated();
     }
 }

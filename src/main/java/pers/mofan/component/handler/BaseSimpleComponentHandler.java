@@ -26,7 +26,7 @@ public abstract class BaseSimpleComponentHandler implements ComponentLocator, Si
     }
 
     @Override
-    public boolean isArrayComponent() {
+    public final boolean isArrayComponent() {
         return false;
     }
 
