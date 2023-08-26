@@ -9,7 +9,7 @@ import pers.mofan.component.store.TopLevelComponentLocatorStore;
  * @author mofan
  * @date 2023/8/13 17:21
  */
-public interface TopLevelComponentLocator extends TopLevelComponentLocatorStore, SimpleComponentLocator, SmartInitializingSingleton {
+public interface TopLevelComponentLocator extends TopLevelComponentLocatorStore, ComponentLocator, SmartInitializingSingleton {
 
     /**
      * 初始化组件定位器
@@ -19,7 +19,7 @@ public interface TopLevelComponentLocator extends TopLevelComponentLocatorStore,
     @Override
     default void afterSingletonsInstantiated() {
         initComponentLocators();
-        SimpleComponentLocator.super.afterSingletonsInstantiated();
+        ComponentLocator.super.afterSingletonsInstantiated();
     }
 
     default void initSubComponentLocators() {

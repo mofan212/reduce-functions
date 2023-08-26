@@ -27,7 +27,7 @@ import java.util.stream.StreamSupport;
  * @author mofan
  * @date 2023/8/13 17:10
  */
-public abstract class BaseSimpleArrayComponentHandler implements SimpleComponentHandler, SimpleComponentLocator, ApplicationContextAware {
+public abstract class BaseSimpleArrayComponentHandler implements SimpleComponentHandler, ComponentLocator, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 
@@ -82,7 +82,7 @@ public abstract class BaseSimpleArrayComponentHandler implements SimpleComponent
     @Override
     public final void handleSubComponent(Class<? extends ComponentLocator> subComponentHandlerClazz,
                                    JsonNode component, Consumer<JsonNode> subComponentElementConsumer) {
-        SimpleComponentLocator.super.handleSubComponent(subComponentHandlerClazz, component, subComponentElementConsumer);
+        ComponentLocator.super.handleSubComponent(subComponentHandlerClazz, component, subComponentElementConsumer);
     }
 
     @Override
