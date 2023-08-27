@@ -1,7 +1,7 @@
 package pers.mofan.component.dispatcher;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import pers.mofan.component.handler.ComponentHandler;
+import pers.mofan.component.handler.TopLevelComponentHandler;
 
 import java.util.List;
 
@@ -13,5 +13,5 @@ public interface ComponentHandlerDispatcher {
     /**
      * 根据传入的节点分发到各个组件处理器中
      */
-    List<ComponentHandler> dispatch(ObjectNode objectNode);
+    List<TopLevelComponentHandler> dispatch(ObjectNode objectNode);
 }

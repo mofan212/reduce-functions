@@ -16,7 +16,7 @@ import java.util.function.Function;
  * @author mofan
  * @date 2023/8/13 19:44
  */
-public abstract class BaseSimpleComponentHandler implements ComponentLocator, SimpleComponentHandler {
+public abstract class BaseSimpleComponentHandler implements ComponentHandler {
 
     private final ComponentLocatorStore componentLocatorStore = new DefaultComponentLocatorStore();
 
@@ -42,7 +42,7 @@ public abstract class BaseSimpleComponentHandler implements ComponentLocator, Si
 
     @Override
     public final void handleSubComponent(Class<? extends ComponentLocator> subComponentHandlerClazz, JsonNode component, Consumer<JsonNode> subComponentElementConsumer) {
-        ComponentLocator.super.handleSubComponent(subComponentHandlerClazz, component, subComponentElementConsumer);
+        ComponentHandler.super.handleSubComponent(subComponentHandlerClazz, component, subComponentElementConsumer);
     }
 
     @Override

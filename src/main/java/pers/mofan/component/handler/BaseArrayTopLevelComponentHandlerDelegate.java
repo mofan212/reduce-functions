@@ -16,7 +16,7 @@ import java.util.function.Function;
  * @author mofan
  * @date 2023/8/13 19:47
  */
-public abstract class BaseArrayTopLevelComponentHandlerDelegate extends BaseSimpleArrayComponentHandler implements ComponentHandler {
+public abstract class BaseArrayTopLevelComponentHandlerDelegate extends BaseSimpleArrayComponentHandler implements TopLevelComponentHandler {
 
     private final TopLevelComponentLocatorStore store = new DefaultTopLevelComponentLocatorStore();
 
@@ -42,6 +42,6 @@ public abstract class BaseArrayTopLevelComponentHandlerDelegate extends BaseSimp
 
     @Override
     public final void afterSingletonsInstantiated() {
-        ComponentHandler.super.afterSingletonsInstantiated();
+        TopLevelComponentHandler.super.afterSingletonsInstantiated();
     }
 }

@@ -21,7 +21,7 @@ import java.util.function.Function;
  * @author mofan
  * @date 2023/8/13 19:40
  */
-public abstract class BaseSingleTopLevelComponentHandlerDelegate extends BaseSimpleComponentHandler implements ComponentHandler, ApplicationContextAware {
+public abstract class BaseSingleTopLevelComponentHandlerDelegate extends BaseSimpleComponentHandler implements TopLevelComponentHandler, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 
@@ -57,7 +57,7 @@ public abstract class BaseSingleTopLevelComponentHandlerDelegate extends BaseSim
 
     @Override
     public final void afterSingletonsInstantiated() {
-        ComponentHandler.super.afterSingletonsInstantiated();
+        TopLevelComponentHandler.super.afterSingletonsInstantiated();
     }
 
     @Override

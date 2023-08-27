@@ -1,7 +1,7 @@
 package pers.mofan.component.dispatcher;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import pers.mofan.component.handler.ComponentHandler;
+import pers.mofan.component.handler.TopLevelComponentHandler;
 import pers.mofan.component.store.TopLevelComponentLocatorStore;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +23,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DefaultComponentHandlerDispatcher implements ComponentHandlerDispatcher, ApplicationRunner {
 
     @Autowired
-    private List<ComponentHandler> handlers;
+    private List<TopLevelComponentHandler> handlers;
 
-    private final Map<String, List<ComponentHandler>> handlerMap = new ConcurrentHashMap<>();
+    private final Map<String, List<TopLevelComponentHandler>> handlerMap = new ConcurrentHashMap<>();
 
     @Override
-    public List<ComponentHandler> dispatch(ObjectNode objectNode) {
-        List<ComponentHandler> handlers = handlerMap.get(TopLevelComponentLocatorStore.buildLocatorKey(objectNode));
+    public List<TopLevelComponentHandler> dispatch(ObjectNode objectNode) {
+        List<TopLevelComponentHandler> handlers = handlerMap.get(TopLevelComponentLocatorStore.buildLocatorKey(objectNode));
         if (CollectionUtils.isEmpty(handlers)) {
             return Collections.emptyList();
         }
@@ -38,9 +38,9 @@ public class DefaultComponentHandlerDispatcher implements ComponentHandlerDispat
 
     @Override
     public void run(ApplicationArguments args) {
-        for (ComponentHandler handler : handlers) {
+        for (TopLevelComponentHandler handler : handlers) {
             for (String locatorKey : handler.getLocatorsKeySet()) {
-                List<ComponentHandler> handlerList = handlerMap.computeIfAbsent(locatorKey, i -> new ArrayList<>());
+                List<TopLevelComponentHandler> handlerList = handlerMap.computeIfAbsent(locatorKey, i -> new ArrayList<>());
                 handlerList.add(handler);
             }
         }
