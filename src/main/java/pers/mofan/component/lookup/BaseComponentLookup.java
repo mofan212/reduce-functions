@@ -42,7 +42,7 @@ public abstract class BaseComponentLookup implements ComponentLookup, Applicatio
 
     @Override
     public final void run(ApplicationArguments args) {
-        var map = applicationContext.getBean(ComponentRelationshipCollector.class).collect(getComponentIdentity().getName());
+        var map = applicationContext.getBean(ComponentRelationshipCollector.class).collect(getComponentIdentity());
         singleComponentReferenceRelationship.putAll(map.getOrDefault(Boolean.FALSE, Collections.emptyMap()));
         arrayComponentReferenceRelationship.putAll(map.getOrDefault(Boolean.TRUE, Collections.emptyMap()));
     }

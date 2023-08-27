@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2023/8/13 19:57
  */
 @Component
-public class DefaultComponentHandlerDispatcher implements ComponentHandlerDispatcher, ApplicationRunner {
+public class DefaultTopLevelComponentHandlerDispatcher implements TopLevelComponentHandlerDispatcher, ApplicationRunner {
 
     @Autowired
     private List<TopLevelComponentHandler> handlers;

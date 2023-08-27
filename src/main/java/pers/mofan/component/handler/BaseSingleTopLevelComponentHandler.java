@@ -16,12 +16,12 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * 单个顶级组件处理器
+ * 非列表顶层组件处理器
  *
  * @author mofan
  * @date 2023/8/13 19:40
  */
-public abstract class BaseSingleTopLevelComponentHandlerDelegate extends BaseSimpleComponentHandler implements TopLevelComponentHandler, ApplicationContextAware {
+public abstract class BaseSingleTopLevelComponentHandler extends BaseSimpleComponentHandler implements TopLevelComponentHandler, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 

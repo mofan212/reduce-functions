@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * 单个非顶级组件处理器
+ * 非列表非顶层组件处理器
  *
  * @author mofan
  * @date 2023/8/13 19:44

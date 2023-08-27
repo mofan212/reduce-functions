@@ -3,6 +3,8 @@ package pers.mofan.component.lookup;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Maps;
 import com.google.common.graph.Graph;
+import pers.mofan.component.ComponentIdentity;
+import pers.mofan.component.bo.MyComponent;
 import pers.mofan.component.handler.TopLevelComponentLocator;
 import pers.mofan.component.handler.ComponentLocator;
 import pers.mofan.component.util.GraphUtils;
@@ -40,7 +42,7 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
     @Autowired
     private List<ComponentLocator> componentLocators;
 
-    private Map<String, List<ComponentLocator>> processedComponentMap;
+    private Map<Class<? extends MyComponent>, List<ComponentLocator>> processedComponentMap;
 
     private Graph<Class<? extends ComponentLocator>> subComponentRefGraph;
 
@@ -48,7 +50,7 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
      * @param componentIdentity 组件标识
      * @return 最外层 Map 的 key，是否为列表组件；第二层 Map 的 key，顶级组件定位器的 key
      */
-    public Map<Boolean, Map<String, List<Function<JsonNode, List<Optional<JsonNode>>>>>> collect(String componentIdentity) {
+    public Map<Boolean, Map<String, List<Function<JsonNode, List<Optional<JsonNode>>>>>> collect(Class<? extends MyComponent> componentIdentity) {
         Collection<List<Class<? extends ComponentLocator>>> allRefPath = buildTargetComponentRefPath(componentIdentity);
         if (CollectionUtils.isEmpty(allRefPath)) {
             return Collections.emptyMap();
@@ -97,7 +99,7 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
         return componentLocateMap;
     }
 
-    private Collection<List<Class<? extends ComponentLocator>>> buildTargetComponentRefPath(String componentIdentity) {
+    private Collection<List<Class<? extends ComponentLocator>>> buildTargetComponentRefPath(Class<? extends MyComponent> componentIdentity) {
         return this.processedComponentMap.getOrDefault(componentIdentity, Collections.emptyList()).stream()
                 .map(ComponentLocator::getClass)
                 .flatMap(i -> buildRefPaths(i).stream())
@@ -140,7 +142,7 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         // 构建子组件引用图
         buildSubComponentRefGraph();
         // 构建处理组件 Map
@@ -163,7 +165,7 @@ public class ComponentRelationshipCollector implements ApplicationRunner, Ordere
     }
 
     private void buildProcessedComponentMap() {
-        this.processedComponentMap = this.componentLocators.stream().collect(Collectors.groupingBy(i -> i.getComponentIdentity().getName()));
+        this.processedComponentMap = this.componentLocators.stream().collect(Collectors.groupingBy(ComponentIdentity::getComponentIdentity));
     }
 
     @Override

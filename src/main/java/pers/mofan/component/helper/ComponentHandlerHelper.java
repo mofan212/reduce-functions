@@ -3,7 +3,7 @@ package pers.mofan.component.helper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import pers.mofan.component.context.HandlerContext;
-import pers.mofan.component.dispatcher.ComponentHandlerDispatcher;
+import pers.mofan.component.dispatcher.TopLevelComponentHandlerDispatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Component
 public class ComponentHandlerHelper {
     @Autowired
-    private ComponentHandlerDispatcher dispatcher;
+    private TopLevelComponentHandlerDispatcher dispatcher;
 
     public void handle(ObjectNode objectNode, HandlerContext context) {
         // 一个节点由多个组件组成

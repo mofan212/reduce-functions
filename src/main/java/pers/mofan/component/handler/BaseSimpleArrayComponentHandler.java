@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.lang.NonNull;
 import pers.mofan.component.bo.MyComponent;
 import pers.mofan.component.context.HandlerContext;
+import pers.mofan.component.store.ComponentLocatorStore;
 import pers.mofan.component.store.support.DefaultComponentLocatorStore;
 import pers.mofan.util.CastUtils;
 
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
- * 单个非顶级列表组件处理器
+ * 列表非顶层组件处理器
  *
  * @author mofan
  * @date 2023/8/13 17:10
@@ -31,7 +32,7 @@ public abstract class BaseSimpleArrayComponentHandler implements ComponentHandle
 
     private ApplicationContext applicationContext;
 
-    private final DefaultComponentLocatorStore subComponentLocatorManager = new DefaultComponentLocatorStore();
+    private final ComponentLocatorStore subComponentLocatorManager = new DefaultComponentLocatorStore();
 
     @Override
     public final void initSubComponentLocators() {
@@ -103,7 +104,7 @@ public abstract class BaseSimpleArrayComponentHandler implements ComponentHandle
     }
 
     /**
-     * 数组元素组件级联修改处理器
+     * 列表组件处理器
      *
      * @return 处理器的 Class
      */

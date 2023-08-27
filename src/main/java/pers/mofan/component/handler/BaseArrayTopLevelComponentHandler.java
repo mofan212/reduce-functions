@@ -11,12 +11,12 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * 单个顶级列表组件处理器
+ * 列表顶层组件处理器
  *
  * @author mofan
  * @date 2023/8/13 19:47
  */
-public abstract class BaseArrayTopLevelComponentHandlerDelegate extends BaseSimpleArrayComponentHandler implements TopLevelComponentHandler {
+public abstract class BaseArrayTopLevelComponentHandler extends BaseSimpleArrayComponentHandler implements TopLevelComponentHandler {
 
     private final TopLevelComponentLocatorStore store = new DefaultTopLevelComponentLocatorStore();
 
